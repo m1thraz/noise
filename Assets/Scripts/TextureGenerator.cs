@@ -3,8 +3,10 @@ using System.Collections;
 
 public static class TextureGenerator {
 
+	//generate a Texture based on the colormap
 	public static Texture2D TextureFromColourMap(Color[] colourMap, int width, int height) {
 		Texture2D texture = new Texture2D (width, height);
+		//blurr fix
 		texture.filterMode = FilterMode.Point;
 		texture.wrapMode = TextureWrapMode.Clamp;
 		texture.SetPixels (colourMap);
@@ -12,7 +14,7 @@ public static class TextureGenerator {
 		return texture;
 	}
 
-
+	//generate texture based on the height map
 	public static Texture2D TextureFromHeightMap(float[,] heightMap) {
 		int width = heightMap.GetLength (0);
 		int height = heightMap.GetLength (1);

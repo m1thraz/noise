@@ -3,6 +3,11 @@ using System.Collections;
 
 public static class Noise {
 
+	/* mapwidth defines the width of the map
+	 * mapheight defines the height of the map
+	 * seed is used to generate a pseudo random number to generate the same map if the same seed is given as before
+	 * scale defines the zoom of the noise
+	 */
 	public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset) {
 		float[,] noiseMap = new float[mapWidth,mapHeight];
 
@@ -14,6 +19,7 @@ public static class Noise {
 			octaveOffsets [i] = new Vector2 (offsetX, offsetY);
 		}
 
+		//division by 0 error handling
 		if (scale <= 0) {
 			scale = 0.0001f;
 		}
@@ -33,9 +39,12 @@ public static class Noise {
 				float noiseHeight = 0;
 
 				for (int i = 0; i < octaves; i++) {
+					//changing noise scale towards center 
 					float sampleX = (x-halfWidth) / scale * frequency + octaveOffsets[i].x;
 					float sampleY = (y-halfHeight) / scale * frequency + octaveOffsets[i].y;
 
+					//generate perlin value for cell at x y
+					//noise *2 -1 for a range from -1 to +1 for negative heights
 					float perlinValue = Mathf.PerlinNoise (sampleX, sampleY) * 2 - 1;
 					noiseHeight += perlinValue * amplitude;
 
@@ -52,6 +61,7 @@ public static class Noise {
 			}
 		}
 
+		//normalise noisemap for values between 0 and 1
 		for (int y = 0; y < mapHeight; y++) {
 			for (int x = 0; x < mapWidth; x++) {
 				noiseMap [x, y] = Mathf.InverseLerp (minNoiseHeight, maxNoiseHeight, noiseMap [x, y]);

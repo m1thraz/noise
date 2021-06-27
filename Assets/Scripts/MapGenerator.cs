@@ -27,9 +27,12 @@ public class MapGenerator : MonoBehaviour {
 	public TerrainType[] regions;
 
 	public void GenerateMap() {
+		//Generate the noise map with given parameters
 		float[,] noiseMap = Noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
 
 		Color[] colourMap = new Color[mapChunkSize * mapChunkSize];
+
+		//Color the terrain based on the regions array
 		for (int y = 0; y < mapChunkSize; y++) {
 			for (int x = 0; x < mapChunkSize; x++) {
 				float currentHeight = noiseMap [x, y];
@@ -42,6 +45,8 @@ public class MapGenerator : MonoBehaviour {
 			}
 		}
 
+		//draw the map with the MapDisplay class
+		//dependent on the type of the map
 		MapDisplay display = FindObjectOfType<MapDisplay> ();
 		if (drawMode == DrawMode.NoiseMap) {
 			display.DrawTexture (TextureGenerator.TextureFromHeightMap (noiseMap));
@@ -52,6 +57,7 @@ public class MapGenerator : MonoBehaviour {
 		}
 	}
 
+	//reset values if not valid
 	void OnValidate() {
 		if (lacunarity < 1) {
 			lacunarity = 1;
