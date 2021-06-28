@@ -34,6 +34,7 @@ public static class MeshGenerator {
 	}
 }
 
+//Stores the data for the mesh
 public class MeshData {
 	public Vector3[] vertices;
 	public int[] triangles;
@@ -47,6 +48,9 @@ public class MeshData {
 		triangles = new int[(meshWidth-1)*(meshHeight-1)*6];
 	}
 
+	/*add a triangle to the triangle array
+	 * a b c are 3 points which form the triangle
+	 */
 	public void AddTriangle(int a, int b, int c) {
 		triangles [triangleIndex] = a;
 		triangles [triangleIndex + 1] = b;
@@ -54,6 +58,7 @@ public class MeshData {
 		triangleIndex += 3;
 	}
 
+	//creates the mesh
 	public Mesh CreateMesh() {
 		Mesh mesh = new Mesh ();
 		mesh.vertices = vertices;
