@@ -1236,6 +1236,7 @@ m_PackageAssets:
         - 1.6.0-pre.3
         - 1.6.0-pre.4
         - 1.6.0-pre.5
+        - 1.6.1
         compatible:
         - 1.4.8
         - 1.5.0-pre.2
@@ -1254,6 +1255,7 @@ m_PackageAssets:
         - 1.6.0-pre.3
         - 1.6.0-pre.4
         - 1.6.0-pre.5
+        - 1.6.1
         verified: 1.4.8
       dependencies:
       - name: com.unity.modules.director
