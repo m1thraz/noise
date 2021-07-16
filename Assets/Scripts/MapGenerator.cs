@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
-
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 public class MapGenerator : MonoBehaviour {
 
 	public enum DrawMode {NoiseMap, ColourMap, Mesh, FalloffMap};
@@ -25,20 +25,37 @@ public class MapGenerator : MonoBehaviour {
 	public bool autoUpdate;
 	public bool useFalloff;
 
+	public float radius = 1;
+	public Vector2 regionSize = new Vector2(240,240);
+	public int rejectionSamples = 30;
+
+	public List<Vector2> points;
+
 	public TerrainType[] regions;
 
 	float[,] falloffMap;
+	float[,] noiseMap;
+
+	void Start()
+    {
+		GenerateMap();
+		GenerateObjects();
+
+	}
 
 	void Awake()
     {
 		falloffMap = FalloffGenerator.GenerateFalloffMap(mapChunkSize);
+		points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples); // when values change in the inspector
 
 	}
 
 	public void GenerateMap() {
 		//Generate the noise map with given parameters
-		float[,] noiseMap = Noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
+		noiseMap = Noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
+		
 
+	
 		Color[] colourMap = new Color[mapChunkSize * mapChunkSize];
 
 		//Color the terrain based on the regions array
@@ -48,6 +65,7 @@ public class MapGenerator : MonoBehaviour {
 					noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - falloffMap[x, y]);
 				}
 				float currentHeight = noiseMap [x, y];
+				//Debug.Log(currentHeight);
 				for (int i = 0; i < regions.Length; i++) {
 					if (currentHeight <= regions [i].height) {
 						colourMap [y * mapChunkSize + x] = regions [i].colour;
@@ -56,6 +74,8 @@ public class MapGenerator : MonoBehaviour {
 				}
 			}
 		}
+
+		GenerateObjects();
 
 		//draw the map with the MapDisplay class
 		//dependent on the type of the map
@@ -71,6 +91,27 @@ public class MapGenerator : MonoBehaviour {
 		}
 	}
 
+	void GenerateObjects()
+    {
+		//Place Objects in Map
+		if (points != null)
+		{
+			foreach (Vector2 point in points)
+			{
+				//z.b baum code nur für grün
+				float  currentHeight = noiseMap[(int)point.x, (int)point.y];
+				if (currentHeight > 0.55 && currentHeight < 0.7)
+				{
+					//point  ist ein vector2 also hat es die variablen point.x und point.y
+					GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+					cube.transform.position = new Vector3((int)point.x, (int)point.y, (int)currentHeight);
+				}
+
+			}
+		}
+
+	}
+
 	//reset values if not valid
 	void OnValidate() {
 		if (lacunarity < 1) {
@@ -81,6 +122,7 @@ public class MapGenerator : MonoBehaviour {
 		}
 
 		falloffMap = FalloffGenerator.GenerateFalloffMap(mapChunkSize);
+		points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples); // when values change in the inspector
 	}
 }
 
