@@ -33,13 +33,18 @@ public class MapGenerator : MonoBehaviour {
 
 	public TerrainType[] regions;
 
-	float[,] falloffMap;
+    public int forestSize = 25;
+    public int elementSpacing = 10;
+
+    public Element[] elements;
+
+    float[,] falloffMap;
 	float[,] noiseMap;
 
 	void Start()
     {
 		GenerateMap();
-		GenerateObjects();
+	//	GenerateObjects();
 
 	}
 
@@ -75,7 +80,7 @@ public class MapGenerator : MonoBehaviour {
 			}
 		}
 
-		GenerateObjects();
+		//GenerateObjects();
 
 		//draw the map with the MapDisplay class
 		//dependent on the type of the map
@@ -90,30 +95,47 @@ public class MapGenerator : MonoBehaviour {
 			display.DrawTexture(TextureGenerator.TextureFromHeightMap(FalloffGenerator.GenerateFalloffMap(mapChunkSize)));
 		}
 	}
-
-	void GenerateObjects()
+    /*
+    void GenerateObjects()
     {
-		//Place Objects in Map
-		if (points != null)
-		{
-			foreach (Vector2 point in points)
-			{
-				//z.b baum code nur für grün
-				float  currentHeight = noiseMap[(int)point.x, (int)point.y];
-				if (currentHeight > 0.55 && currentHeight < 0.7)
-				{
-					//point  ist ein vector2 also hat es die variablen point.x und point.y
-					GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-					cube.transform.position = new Vector3((int)point.x, (int)point.y, (int)currentHeight);
-				}
+        //Place Objects in Map
+        if (points != null)
+        {
+            foreach (Vector2 point in points)
+            {
+                //z.b baum code nur für grün
+                float currentHeight = noiseMap[x, y];
+                if (currentHeight > 0.55 && currentHeight < 0.7)
+                {
+                    for (int x = -10; x < forestSize; x += elementSpacing)
+                    {
+                        for (int z = -50; z < forestSize; z += elementSpacing)
+                        {
 
-			}
-		}
+                            Element element = elements[0];
+                            Vector3 position = new Vector3(x, 0f, z); //0f durch terrain height ersetzen
+                            Vector3 offset = new Vector3(Random.Range(-0.75f, 0.75f), 0f, Random.Range(-0.75f, 0.75f));
+                            Vector3 rotation = new Vector3(Random.Range(0, 5f), Random.Range(0, 360f), Random.Range(0, 5f));
+                            Vector3 scale = Vector3.one * Random.Range(0.75f, 1.2f);
 
-	}
 
-	//reset values if not valid
-	void OnValidate() {
+                            GameObject newElement = Instantiate(element.GetRandom());
+                            newElement.transform.SetParent(transform);
+                            newElement.transform.position = position + offset;
+                            newElement.transform.eulerAngles = rotation;
+                            newElement.transform.localScale = scale;
+                        }
+                    }
+                }
+
+            }
+        }
+
+    }
+    */
+    
+    //reset values if not valid
+    void OnValidate() {
 		if (lacunarity < 1) {
 			lacunarity = 1;
 		}
@@ -131,4 +153,11 @@ public struct TerrainType {
 	public string name;
 	public float height;
 	public Color colour;
+
+    public GameObject[] prefabs;
+
+    public GameObject GetRandom()
+    {
+        return prefabs[Random.Range(0, prefabs.Length)];
+    }
 }
