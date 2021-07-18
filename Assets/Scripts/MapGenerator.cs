@@ -25,16 +25,16 @@ public class MapGenerator : MonoBehaviour {
 	public bool autoUpdate;
 	public bool useFalloff;
 
-	public float radius = 1;
-	public Vector2 regionSize = new Vector2(240,240);
-	public int rejectionSamples = 30;
+	//public float radius = 1;
+	//public Vector2 regionSize = new Vector2(240,240);
+	//public int rejectionSamples = 30;
 
-	public List<Vector2> points;
+	//public List<Vector2> points;
 
 	public TerrainType[] regions;
 
-    public int forestSize = 25;
-    public int elementSpacing = 10;
+   // public int forestSize = 25;
+   // public int elementSpacing = 10;
 
     public Element[] elements;
 
@@ -44,14 +44,13 @@ public class MapGenerator : MonoBehaviour {
 	void Start()
     {
 		GenerateMap();
-	//	GenerateObjects();
 
 	}
 
 	void Awake()
     {
 		falloffMap = FalloffGenerator.GenerateFalloffMap(mapChunkSize);
-		points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples); // when values change in the inspector
+		//points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples); // when values change in the inspector
 
 	}
 
@@ -80,7 +79,7 @@ public class MapGenerator : MonoBehaviour {
 			}
 		}
 
-		//GenerateObjects();
+
 
 		//draw the map with the MapDisplay class
 		//dependent on the type of the map
@@ -95,44 +94,6 @@ public class MapGenerator : MonoBehaviour {
 			display.DrawTexture(TextureGenerator.TextureFromHeightMap(FalloffGenerator.GenerateFalloffMap(mapChunkSize)));
 		}
 	}
-    /*
-    void GenerateObjects()
-    {
-        //Place Objects in Map
-        if (points != null)
-        {
-            foreach (Vector2 point in points)
-            {
-                //z.b baum code nur für grün
-                float currentHeight = noiseMap[x, y];
-                if (currentHeight > 0.55 && currentHeight < 0.7)
-                {
-                    for (int x = -10; x < forestSize; x += elementSpacing)
-                    {
-                        for (int z = -50; z < forestSize; z += elementSpacing)
-                        {
-
-                            Element element = elements[0];
-                            Vector3 position = new Vector3(x, 0f, z); //0f durch terrain height ersetzen
-                            Vector3 offset = new Vector3(Random.Range(-0.75f, 0.75f), 0f, Random.Range(-0.75f, 0.75f));
-                            Vector3 rotation = new Vector3(Random.Range(0, 5f), Random.Range(0, 360f), Random.Range(0, 5f));
-                            Vector3 scale = Vector3.one * Random.Range(0.75f, 1.2f);
-
-
-                            GameObject newElement = Instantiate(element.GetRandom());
-                            newElement.transform.SetParent(transform);
-                            newElement.transform.position = position + offset;
-                            newElement.transform.eulerAngles = rotation;
-                            newElement.transform.localScale = scale;
-                        }
-                    }
-                }
-
-            }
-        }
-
-    }
-    */
     
     //reset values if not valid
     void OnValidate() {
@@ -144,7 +105,7 @@ public class MapGenerator : MonoBehaviour {
 		}
 
 		falloffMap = FalloffGenerator.GenerateFalloffMap(mapChunkSize);
-		points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples); // when values change in the inspector
+		//points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples); // when values change in the inspector
 	}
 }
 
